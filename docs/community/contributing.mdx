@@ -1,0 +1,44 @@
+First, thank you for your contribution. 🚀🚀
+
+## Project Structure
+
+- [`/packages/sendary`](https://github.com/zely-js/sendary/tree/main/packages/sendary): Core framework, compiler, client runtime, and components.
+- [`/packages/create-sendary`](https://github.com/zely-js/sendary/tree/main/packages/create-sendary): Scaffold CLI and template.
+- [`/packages/tsconfig`](https://github.com/zely-js/sendary/tree/main/packages/tsconfig): Shared TypeScript configuration.
+- [`/scripts/`](https://github.com/zely-js/sendary/tree/main/scripts): Build scripts.
+
+## Contribute
+
+1. Fork and clone the [repository](https://github.com/zely-js/sendary)
+
+```sh
+git clone https://github.com/zely-js/sendary.git
+cd sendary
+```
+
+2. Install dependencies
+
+> This repository uses Yarn 1 (classic) with a `yarn.lock` file.
+> [Yarn](https://yarnpkg.com/) must be installed.
+
+```sh
+yarn install
+```
+
+3. Make changes
+
+4. Verify locally
+
+```sh
+yarn test --run
+yarn tsc --noEmit -p packages/sendary/tsconfig.json
+yarn build
+```
+
+> `yarn test` without `--run` starts Vitest in watch mode. Use the package
+> `tsconfig.json` for typechecking; the root config does not resolve the `~/*` path alias.
+
+Use `yarn eslint <paths>` to check lint without writing changes. `yarn lint-fix` rewrites
+files. There is no CI workflow, so run these checks before opening a pull request.
+
+5. Open a [Pull Request](https://github.com/zely-js/sendary/pulls)

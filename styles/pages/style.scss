@@ -1,0 +1,279 @@
+@use "./post.scss";
+
+/* Mobile Docs Sub-Bar (Visible under header on screens <= 1024px) */
+.mobile-docs-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 90;
+  height: 44px;
+  padding: 0 1.25rem;
+  background-color: var(--bg-100-50);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-bottom: 1px solid var(--border-subtle);
+
+  .mobile-docs-bar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-200);
+    background: transparent !important;
+    border: none;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 0;
+    transition: color 0.15s ease;
+
+    i {
+      font-size: 13px;
+      color: var(--text-300);
+    }
+
+    &:hover {
+      background: transparent !important;
+      color: var(--text-100);
+
+      i {
+        color: var(--primary-100);
+      }
+    }
+  }
+
+  .mobile-docs-bar-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: var(--primary-100-50);
+    color: var(--primary-100);
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .mobile-docs-bar {
+    display: flex;
+  }
+}
+
+/* Documentation Layout */
+.documentation {
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: hidden;
+
+  .menu-header-mobile {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-100);
+    }
+
+    .close-sidebar-btn {
+      font-size: 15px;
+      color: var(--text-300);
+      padding: 2px;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--text-100);
+      }
+    }
+  }
+
+  /* Sidebar Menu */
+  .menu {
+    width: 270px;
+    flex-shrink: 0;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-subtle);
+    padding: calc(56px + 1.25rem) 0.75rem 3rem;
+
+    .menu-layout {
+      padding-bottom: 40px;
+    }
+
+    .category {
+      margin-bottom: 12px;
+
+      button.no-btn:first-child {
+        text-align: left;
+        flex: 1;
+        background: transparent !important;
+      }
+
+      h4 {
+        margin: 10px 0 4px;
+        color: var(--text-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        button.text-inter {
+          font-weight: 600;
+          font-size: 0.925rem;
+          padding: 4px 6px;
+          border-radius: 0;
+          transition: color 0.35s ease;
+          color: var(--text-200);
+          background: transparent !important;
+
+          &:hover {
+            color: var(--primary-100);
+            background: transparent !important;
+          }
+
+          &.active {
+            color: var(--primary-100);
+            background: transparent !important;
+          }
+        }
+
+        button:last-child {
+          padding: 2px;
+          border-radius: 0;
+          color: var(--text-300);
+          background: transparent !important;
+
+          i {
+            font-size: 12px;
+            transition: transform 0.2s ease;
+          }
+
+          &:hover {
+            color: var(--text-100);
+            background: transparent !important;
+          }
+        }
+      }
+
+      .posts {
+        padding-left: 10px;
+        margin-top: 4px;
+
+        div {
+          width: 100%;
+          border-left: 1px solid var(--border-subtle);
+          transition: border-color 0.15s ease;
+          padding: 2px 0 2px 15px;
+        }
+
+        a {
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          padding: 4px 0;
+          border-radius: 0;
+          color: var(--text-300);
+          text-decoration: none;
+          background: transparent !important;
+          transition: color 0.35s ease;
+
+          &:hover {
+            color: var(--text-100);
+            background: transparent !important;
+          }
+
+          &.active {
+            color: var(--primary-100);
+            background: transparent !important;
+          }
+        }
+
+        div:has(.active) {
+          border-left-color: var(--primary-100);
+        }
+      }
+    }
+
+    .category.hide {
+      .posts {
+        display: none;
+      }
+      h4 button:last-child i {
+        transform: rotate(-90deg) !important;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    padding: calc(56px + 1.75rem) 2.25rem 4rem;
+  }
+}
+
+/* Mobile Off-Canvas Sidebar */
+@media only screen and (max-width: 1024px) {
+  .documentation {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    display: block;
+
+    .menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(320px, 85vw);
+      height: 100%;
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      background-color: var(--bg-100);
+      border-right: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-lg);
+      padding: 1.25rem 1rem;
+      overflow-y: auto;
+
+      &.menu-open {
+        transform: translateX(0);
+      }
+
+      .menu-header-mobile {
+        display: flex;
+      }
+    }
+
+    .content {
+      padding: calc(56px + 44px + 1.25rem) 1rem 3rem;
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  .menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999;
+    animation: fadeIn 0.15s ease;
+  }
+}

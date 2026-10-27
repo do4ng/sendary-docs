@@ -1,0 +1,35 @@
+Sitemap generation is not yet implemented.  
+Try creating a sitemap manually for now.
+
+## Example
+
+```ts
+// ...
+import { writeFileSync } from "fs";
+
+const baseURL = "https://.../";
+
+export default defineConfig({
+  plugins: [
+    // ...
+    {
+      name: "build:sitemap",
+      apply: "build",
+      buildEnd() {
+        const sitemap: string[] = [];
+
+        sitemap.push('<?xml version="1.0" encoding="UTF-8"?>');
+        sitemap.push(
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        );
+        sitemap.push(`  <url>`);
+        sitemap.push(`    <loc>${baseURL}/</loc>`);
+        sitemap.push(`  </url>`);
+        sitemap.push("</urlset>");
+
+        writeFileSync(path.resolve("./dist/sitemap.xml"), sitemap.join("\n"));
+      },
+    },
+  ],
+});
+```

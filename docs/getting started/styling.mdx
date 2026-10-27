@@ -1,0 +1,58 @@
+Since sendary is built on top of Vite, you can style your app by importing style files or registering them in the `index.html` file.
+
+```ts
+import "../styles.scss";
+```
+
+<Box type="warning">
+  For files that require separate compilation, such as `scss`, you need to
+  install an additional package (e.g., `sass` or `sass-embedded`).
+</Box>
+
+## Stylesheets on the server
+
+Sendary compiles each page twice: once for the browser, and once for Node, which renders the page to static HTML. Node cannot evaluate a stylesheet, so every style import must be removed from the server build.
+
+By default, the compiler recognizes these extensions as style assets:
+
+| Extension | Recognized as an asset |
+| --------- | ---------------------- |
+| `.css`    | Yes                    |
+| `.scss`   | Yes                    |
+| `.sass`   | Yes                    |
+| `.less`   | Yes                    |
+
+When an import matches one of these extensions, the server build replaces it with an empty module, so the stylesheet never reaches server-side code. The browser build still processes the real file through Vite.
+
+## Custom style extensions
+
+The built-in list is limited to the extensions above. If you import a stylesheet with a different extension, the server compiler does not know that the file is an asset. It treats the import as ordinary JavaScript and bundles the file into the server-side code, so CSS that should only exist in the browser can end up in the Node build — or the build can fail while trying to parse the stylesheet as JavaScript.
+
+For example, the server build does not exclude this import unless `.customcss` is declared:
+
+```ts
+// pages/index.tsx
+import "../styles/global.customcss";
+```
+
+Register custom extensions in `compileOptions.assetsExtensions`:
+
+```ts
+// ...
+export default defineConfig({
+  plugins: [
+    // ...
+    sendary({
+      compileOptions: {
+        assetsExtensions: [".customcss"],
+      },
+    }),
+  ],
+});
+```
+
+With this option, `.customcss` imports are removed from the server build in the same way as `.css` imports, while the browser build continues to load them normally.
+
+`assetsExtensions` is additive. The default extensions are always included, so adding `.customcss` does not replace `.css`, `.scss`, `.sass`, or `.less`.
+
+Because this is a compiler option, it applies to every compiled file, including `_layout` and `_error`, not only the page that contains the import.

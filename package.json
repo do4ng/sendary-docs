@@ -1,0 +1,34 @@
+{
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "@types/react": "^19.1.15",
+    "@vitejs/plugin-react": "^4.7.0",
+    "cross-env": "^10.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sass-embedded": "^1.90.0",
+    "vite": "^7.0.6"
+  },
+  "dependencies": {
+    "@mdx-js/mdx": "^3.0.0",
+    "@popperjs/core": "^2.11.8",
+    "mdast": "^3.0.0",
+    "mdast-util-to-string": "2.0.0",
+    "mdx": "^0.3.1",
+    "nextjs-toploader": "^1.6.4",
+    "react-popper": "^2.3.0",
+    "rehype-pretty-code": "^0.13.1",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.0",
+    "remixicon": "^4.0.0",
+    "sass": "^1.90.0",
+    "sendary": "^1.0.0",
+    "shiki": "^1.2.2",
+    "unified": "^11.0.4",
+    "unist-util-visit": "2"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "cross-env BUILD_SUMMARY=true vite build"
+  }
+}

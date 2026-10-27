@@ -1,0 +1,52 @@
+## Folders and Files Conventions
+
+### Folders
+
+Folders in the root directory are used to distinguish the purpose of files.
+The most common one is the **`/pages/`** directory, which contains all route-related files.
+
+| Directory   |                 |
+| ----------- | --------------- |
+| **/pages/** | Pages directory |
+
+### Files
+
+Certain file names are treated as **special routing files** and are not directly included as routes themselves.
+They provide framework-level behavior such as layouts and error handling.
+
+| Filename     | Extension      | Description              |
+| ------------ | -------------- | ------------------------ |
+| **\_layout** | `.tsx`, `.jsx` | Layout component wrapper |
+| **\_error**  | `.tsx`, `.jsx` | Error page (e.g., 404)   |
+
+---
+
+## Routes
+
+The following examples show how file names are mapped to routes:
+
+| Filename        | Extension      | Path     |
+| --------------- | -------------- | -------- |
+| `index`         | `.tsx`, `.jsx` | /        |
+| `foo/index`     | `.tsx`, `.jsx` | /foo     |
+| `foo/bar`       | `.tsx`, `.jsx` | /foo/bar |
+| `foo/bar/index` | `.tsx`, `.jsx` | /foo/bar |
+
+---
+
+## Dynamic Routes
+
+Dynamic segments are declared using square brackets `[ ]`.
+This makes it possible to capture values from the URL.
+
+| Filename             | Extension      | Path          |
+| -------------------- | -------------- | ------------- |
+| `path/[param]`       | `.tsx`, `.jsx` | /\:param      |
+| `path/[param]/index` | `.tsx`, `.jsx` | /\:param      |
+| `path/[param]/list`  | `.tsx`, `.jsx` | /\:param/list |
+
+Dynamic routes are generated only for the values returned by the page's
+`getStaticParams()` function. See [Static Props](/docs/static-props) for the full API.
+
+> Catch-all route segments like `[...]` are **not supported** for static route generation.
+> This restriction ensures that all possible paths are explicitly defined at build time.

@@ -1,0 +1,176 @@
+`<Island />` keeps a server-rendered subtree as HTML until it needs to become interactive.
+
+It is useful for pages where most content is static but a few areas, such as comments, charts, search, or a theme control, need React on the client.
+
+```tsx
+import { Island } from "sendary/components";
+import Comments from "../components/Comments";
+
+export default function PostPage() {
+  return (
+    <article>
+      <h1>Static article content</h1>
+      <p>This content is ready without waiting for the comments UI.</p>
+
+      <Island hydrate="visible">
+        <Comments />
+      </Island>
+    </article>
+  );
+}
+```
+
+In a production build, Sendary renders the island children to HTML with the rest of the page. The application root does not hydrate the island children immediately. Instead, Sendary creates a separate React root for that boundary at the selected time.
+
+> `<Island />` emits one unstyled `div` boundary in the final HTML. The boundary is required to preserve the SSR markup and hydrate only that subtree.
+
+---
+
+## What changes compared with a normal component?
+
+A normal React component belongs to Sendary's application root. Its HTML is rendered during the build and React walks the component again during the first page hydration.
+
+```text
+Build:       Page → HTML
+First load:  application root → hydrate every normal component
+```
+
+An island still contributes HTML at build time, so it remains searchable and visible immediately. Its React work is deferred until the chosen trigger.
+
+```text
+Build:       Page + Island → HTML
+First load:  application root → skip Island children
+Later:       Island boundary → hydrate only its children
+```
+
+This makes islands a good fit for static documents, articles, changelogs, and landing pages. Do not wrap the whole page in one island: the benefit comes from keeping mostly-static content outside the boundary.
+
+---
+
+## `hydrate`
+
+The `hydrate` prop controls when the island becomes interactive.
+
+### `visible` <Badge type="warning">Default</Badge>
+
+Hydrates when the island is near the viewport. Sendary uses `IntersectionObserver` with a small preload margin, so UI can be ready shortly before it is visible.
+
+```tsx
+<Island hydrate="visible">
+  <Comments />
+</Island>
+```
+
+Use it for below-the-fold comments, charts, maps, embeds, and other UI that users may never reach.
+
+### `idle`
+
+Hydrates when the browser has idle time. Browsers without `requestIdleCallback` use a short timeout fallback.
+
+```tsx
+<Island hydrate="idle">
+  <FeedbackWidget />
+</Island>
+```
+
+Use it for non-critical controls that should become available soon after the page is interactive.
+
+### `load`
+
+Hydrates immediately after the application root finishes hydrating.
+
+```tsx
+<Island hydrate="load">
+  <ThemeToggle />
+</Island>
+```
+
+Use it only when a control must be interactive as soon as the page loads. For below-the-fold UI, prefer `visible`.
+
+---
+
+## Choosing a strategy
+
+| UI | Recommended strategy | Why |
+| --- | --- | --- |
+| Comments below an article | `visible` | Avoids React work for readers who never reach them. |
+| Chart, map, or media embed | `visible` | Usually expensive and commonly below the fold. |
+| Analytics preference panel | `idle` | Useful, but not needed for the first interaction. |
+| Theme switcher in the header | `load` | Should respond as soon as the header is usable. |
+| A large article body | No island | It is already static HTML; adding a boundary provides no benefit. |
+
+`visible` is intentionally the default. It preserves the fastest initial path for a static-first page.
+
+---
+
+## Lifecycle and navigation
+
+On the initial production load, Sendary preserves the HTML inside each island boundary. When its trigger fires, the boundary hydrates with the same React children that produced its server HTML.
+
+During client-side navigation, the previous page's island roots are unmounted with their page. New island boundaries are registered with the destination page. Components should still clean up subscriptions, timers, observers, and browser SDK instances in `useEffect` cleanup functions.
+
+```tsx
+function LiveComments() {
+  React.useEffect(() => {
+    const subscription = comments.subscribe();
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return <CommentsList />;
+}
+```
+
+An island is not a cache boundary. Route data continues to use Sendary's normal static-props and client navigation cache.
+
+---
+
+## SSR and client rendering
+
+In production, island children must produce the same HTML on the server and client. Avoid values that change during render, such as `Date.now()`, `Math.random()`, browser-only state, or locale-dependent values that are not passed as props.
+
+```tsx
+// Avoid: server and client can render different values.
+<Island>
+  <p>{Date.now()}</p>
+</Island>
+```
+
+If a component requires `window`, `document`, or a browser SDK, access them from an effect after hydration instead of during render.
+
+```tsx
+function Map() {
+  React.useEffect(() => {
+    // Initialize a browser-only map SDK here.
+  }, []);
+
+  return <div id="map" />;
+}
+
+<Island hydrate="visible">
+  <Map />
+</Island>
+```
+
+### Props
+
+Island children receive ordinary React props. Keep props deterministic and serializable in intent: pass IDs, strings, numbers, and plain data rather than values that are created differently on the server and in the browser.
+
+```tsx
+<Island hydrate="visible">
+  <Comments postId={post.id} initialCount={post.commentCount} />
+</Island>
+```
+
+The `Island` component does not serialize a second copy of those props into HTML. It uses the same page component tree when the boundary hydrates.
+
+---
+
+## Performance notes
+
+`<Island />` defers hydration work. It matters only when a page has a large amount of static content and a small number of interactive sections.
+
+Islands do not change which JavaScript is generated or bundled; they only defer the point at which the island's React tree is hydrated. The benefit is reduced initial React work, not a smaller download.
+
+Avoid nesting islands in this version. Keep each interactive area as a direct, independent island boundary.
+
+For the full rendering model, debugging guidance, and current limitations, see [Architecture and Limitations](/docs/islands-architecture).

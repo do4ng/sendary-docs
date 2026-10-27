@@ -1,0 +1,64 @@
+sendary generates static pages using its own compiler on top of Vite's build functionality.
+
+```bash
+vite build
+```
+
+Before building, be aware that there is a difference between the development server and the production output.
+
+## Production output
+
+`vite build` pre-renders every route to static HTML and writes the result to Vite's
+`outDir` (default `dist`). In development, Vite serves the app and a client React root
+renders each page.
+
+The production HTML is hydrated in the browser. `<Island />` only controls *when* a
+subtree hydrates: on visibility, idle time, or page load. It does not change which
+JavaScript is generated, bundled, or loaded. See [Islands](/docs/island) for the
+hydration timing options.
+
+## \$sendary-router
+
+`$sendary-router` uses browser features for client-side navigation. During SSR, Sendary provides a render context derived from the route file name and static params so URL hooks can render consistently.
+
+1. Dynamic routes are determined by file names and `getStaticParams()`.
+
+2. Default routes are also determined based on file names.
+
+3. `_layout` receives a URL based on the corresponding page.
+
+4. Files like `_error`, which cannot be determined based on file names, are assigned `.sendary/ssr:unknown`.
+
+`useLocation()`, `usePathname()`, `useParams()`, `useSearchQuery()`, and `useHash()` can read that SSR context from a rendered component. Browser navigation operations such as `useRouter().push()` and `router.goto()` are not available while Sendary is building static output.
+
+## Styles Asset
+
+Asset files like `.css` handled by Vite cannot be loaded on the server. Therefore, these files are ignored by the server.
+
+## Data Fetching
+
+The way data is loaded also changes.
+
+In development mode, data is fetched from a page in the form of `/.sendary/__page_data?page={URL}`, but in production mode, it is loaded from pre-generated static data in the `/data/` directory.
+
+## Build output and summary
+
+`vite build` writes the final HTML, `assets/`, and `data/` JSON files to Vite's `outDir`
+(default `dist`). After generating HTML, Sendary removes its temporary `client/`, `server/`,
+`manifest.js`, and `client.js` files from that directory.
+
+The `.sendary/` directory in the project root contains generated working data used during
+development and builds. Do not edit it directly.
+
+Set `BUILD_SUMMARY=true` to print a report of the generated HTML, JavaScript, CSS, and
+static data sizes:
+
+```bash
+BUILD_SUMMARY=true vite build
+```
+
+On Windows, use `cross-env` or set the variable in your shell:
+
+```bash
+cross-env BUILD_SUMMARY=true vite build
+```

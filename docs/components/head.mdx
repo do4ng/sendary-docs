@@ -1,0 +1,19 @@
+The `<Head />` component allows you to manipulate the `<head>` of the HTML file.
+
+```tsx
+import { Head } from "sendary/components";
+
+export default function () {
+  return (
+    <Head>
+      <title>About me</title>
+      <meta name="description" content="About this page" />
+      <link rel="preload" href="/hero.png" as="image" />
+    </Head>
+  );
+}
+```
+
+During a production build, the elements are rendered into the document head. On
+client-side navigation, Sendary removes the previous page's head elements and applies the
+new ones.

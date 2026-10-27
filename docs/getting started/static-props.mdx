@@ -1,0 +1,72 @@
+You can provide params for static page generation through `getStaticParams()` and store static data on the server via `getStaticProps()`.
+
+During `vite build`, `getStaticParams` decides which routes to generate and `getStaticProps` produces the data for each route. In development, Sendary calls `getStaticParams` to validate the requested URL and runs `getStaticProps` on demand; the result is cached until that page changes.
+
+```ts
+export function getStaticParams() {}
+
+export function getStaticProps() {}
+```
+
+<Box type="info">
+  The function names above may change during development. We adopted the most
+  commonly used names to make them intuitive and avoid confusion in the
+  development phase. The unique identity of this package will be established as
+  development progresses
+</Box>
+
+## getStaticParams()
+
+In a dynamic route page, `getStaticParams` provides the possible parameter values to generate static routes.
+Only the paths returned by this function will be generated at build time.
+
+```ts
+// pages/[slug].tsx
+export function getStaticParams() {
+  return [{ slug: "hello" }];
+}
+```
+
+- `/hello` => <Badge type="tip">200</Badge>
+- `/foo` => <Badge type="error">404</Badge>
+
+A dynamic page needs `getStaticParams` to be enumerated at build time. If it is omitted,
+Sendary writes a route containing the literal `[param]` placeholder instead.
+
+---
+
+## getStaticProps()
+
+This function is used to generate static data on the server.
+It runs once for each generated route during the build and passes the returned props to the page.
+
+```tsx
+// pages/hello/[name].tsx
+import type { PageProps } from "sendary";
+
+type Params = { name: string };
+type Props = { message: string };
+
+export function getStaticParams(): Params[] {
+  return [{ name: "world" }, { name: "John" }];
+}
+
+export function getStaticProps({ params }: { params: Params }): Props {
+  return {
+    message: `Hello ${params.name}`,
+  };
+}
+
+export default function ({ params, props }: PageProps<Props, Params>) {
+  return (
+    <>
+      <h1>{props.message}!</h1>
+    </>
+  );
+}
+```
+
+With the example above, the routes `/hello/world` and `/hello/John` will be generated at build time, each rendering the corresponding message.
+
+`getStaticProps` is optional. Without it, the page receives an empty `props` object and
+its static data entry is marked as empty.

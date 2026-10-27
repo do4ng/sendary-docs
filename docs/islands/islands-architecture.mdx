@@ -1,0 +1,73 @@
+Islands are an optional addition: they let Sendary defer *hydration* of a subtree, not server rendering. They concern when a component becomes interactive, not whether JavaScript is generated.
+
+## Rendering model
+
+Sendary is static-first in production:
+
+1. It resolves each file route and runs `getStaticParams()` and `getStaticProps()` when they exist.
+2. It server-renders the page to static HTML.
+3. It injects the matching CSS, page module preload links, and static-data manifest.
+4. The browser hydrates the application root for client-side navigation.
+
+`<Island />` inserts a boundary into step 2. The boundary stores its children as server-rendered HTML and the application root preserves that HTML rather than immediately walking its child React tree. Later, Sendary creates a React root for that boundary according to `hydrate`.
+
+```text
+Static HTML
+└─ App root
+   ├─ Header and article: hydrated with the app root
+   └─ Island boundary: HTML visible now, React hydration deferred
+```
+
+## What Islands change
+
+- Delays React hydration CPU work for below-the-fold or non-critical UI.
+- Avoids running child component effects until the island is activated.
+- Lets a static document become interactive in small, explicit regions.
+
+## What Islands do not change
+
+Islands do not affect code generation or bundling. Adding `<Island />` does not add or
+remove JavaScript, change the page chunk, or change what the browser downloads. It only
+postpones when the boundary's React tree is hydrated.
+
+Use a normal dynamic import when the component inside an island is expensive to download:
+
+```tsx
+const Chart = React.lazy(() => import("../components/Chart"));
+
+<Island hydrate="visible">
+  <React.Suspense fallback={<p>Loading chart…</p>}>
+    <Chart />
+  </React.Suspense>
+</Island>
+```
+
+## Limitations
+
+### Do not nest islands
+
+Keep boundaries independent in the current version. Nested islands make hydration ordering difficult to reason about and are not supported as an optimization target.
+
+### Keep server and client output deterministic
+
+Hydration requires identical initial markup. Read browser state in effects, pass stable data through props, and avoid random or time-dependent output during render.
+
+### Browser-only libraries still need an effect
+
+An island delays client execution; it does not make `window` available to the server renderer. Initialize browser-only SDKs from `useEffect` after the island hydrates.
+
+### Errors are local React-root errors
+
+Because every activated island owns a separate React root, give critical islands their own error UI or boundary. An error inside an island should not prevent the static document outside it from remaining usable.
+
+## Measuring the effect
+
+Use browser performance tools to compare a page before and after adding islands:
+
+1. Record the initial page load with the Performance panel.
+2. Compare scripting time and long tasks before the first interaction.
+3. Scroll to a `visible` island and confirm its work moves to that later point.
+4. Remember that the page's JavaScript is loaded and parsed regardless of islands; compare hydration work rather than expecting a smaller download per island.
+
+Islands are optional. Use one when deferring a specific interactive subtree is useful;
+otherwise a normal component is sufficient.

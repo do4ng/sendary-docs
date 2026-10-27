@@ -1,0 +1,33 @@
+## Layout Component
+
+The `_layout.{tsx|jsx}` file defines a shared layout for all pages.
+It allows you to provide a consistent structure such as navigation bars, footers, or global styles.
+
+> Only **one layout file** is allowed per application, and it must be placed in the top-level `/pages` directory.
+
+```tsx
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
+}
+```
+
+The core router automatically provides `children` as a prop, which represents the currently rendered page.
+
+---
+
+## Error Page
+
+The `_error.{tsx|jsx}` file is used to implement a custom 404 error page.
+This page is displayed when the requested route does not exist.
+
+```tsx
+export default function Error() {
+  return <>Page Not Found</>;
+}
+```
+
+You can customize this component to include links back to the home page, helpful messages, or any other UI for a better user experience.
+
+During client-side errors, the component can receive `{ status, message, detail }` props.
+Sendary also renders the error component once during the build to produce `404.html`; that
+static render does not receive error props, so provide sensible defaults.

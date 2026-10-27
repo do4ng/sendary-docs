@@ -1,0 +1,155 @@
+@use "./vars.scss";
+@use "./components.scss";
+@use "./custom.scss";
+@use "./pages/index.scss";
+@use "./search.scss";
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.text {
+  font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.logo {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+
+  img {
+    height: 100%;
+  }
+}
+
+.text-inter {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.flex {
+  display: flex;
+}
+
+button {
+  color: var(--text-100);
+  background-color: var(--bg-100);
+  font-family: inherit;
+}
+
+i {
+  color: var(--text-100);
+  font-size: 14px;
+  line-height: 1;
+  vertical-align: -0.1em;
+}
+
+a {
+  color: var(--text-100);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--primary-100);
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+
+  color: var(--text-100);
+  background-color: var(--bg-100);
+
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background: var(--primary-100-50);
+  color: var(--primary-100);
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--bg-300);
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-400);
+}
+
+#_app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-btn {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+}
+
+select {
+  font-family: "Geist", sans-serif;
+  background-color: var(--bg-100);
+  color: var(--text-100);
+  border-radius: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-subtle);
+  outline: none;
+}
+
+button.a {
+  color: var(--primary-100);
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  padding-top: 10px;
+}
+
+button.a:hover {
+  text-decoration: underline;
+}

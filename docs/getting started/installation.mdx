@@ -1,0 +1,120 @@
+## Download template
+
+The easiest way to get started with the sendary app is to download a pre-made template.
+
+<Tabs>
+  <TabItem id="npm">
+
+```bash
+npm create sendary my-app
+```
+
+  </TabItem>
+  <TabItem id="yarn">
+
+```bash
+yarn create sendary my-app
+```
+
+</TabItem>
+  <TabItem id="pnpm">
+
+```bash
+pnpm create sendary my-app
+```
+
+</TabItem>
+</Tabs>
+
+After this prompt, go to the directory and type a command (like `npm install`) to install the dependencies.
+
+## Manual installation
+
+You can also install sendary into an existing project.
+
+Since sendary is a vite-based framework, please install dependencies related to vite and react.
+
+```bash
+npm i --save-dev sendary vite @vitejs/plugin-react
+npm i --save-dev react react-dom
+```
+
+And create `vite.config.ts` and configure the configuration file as follows:
+
+```ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+import { sendary } from "sendary";
+
+export default defineConfig({
+  plugins: [react(), sendary()],
+});
+```
+
+Then, add the following scripts to your `package.json` file:
+
+```json
+{
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+```
+
+Last, create `index.html` and add required scripts and container.
+
+```html {3, 7}
+<head>
+  <!-- ... -->
+  <script src="/.sendary/client.js" type="module"></script>
+</head>
+<body>
+  <!-- ... -->
+  %body%
+</body>
+```
+
+## Create your first page
+
+Create a `pages/index.tsx` file:
+
+```tsx
+export default function Home() {
+  return <h1>Hello, sendary!</h1>;
+}
+```
+
+Run `vite dev` and open the local URL printed by Vite.
+
+## Setup TypeScript
+
+To make full use of the types provided by sendary, create a `.d.ts` file like the following:
+
+```ts
+// env.d.ts
+import "sendary/env.d.ts";
+```
+
+## Rule of `index.html`
+
+The `index.html` file must follow these rules:
+
+1. It must be located in the root directory.
+2. The sendary client script must be registered inside the `<head>`.
+3. You must include `%body%` inside the `<body>` to indicate to the server where to inject code.
+
+<Box type="info">
+  ```html
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="/.sendary/client.js" type="module"></script>
+    </head>
+    <body>%body%</body>
+  </html>
+  ```
+</Box>

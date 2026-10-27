@@ -1,0 +1,36 @@
+## Test Locally
+
+Before deploying, make sure your app works correctly in the local environment.
+
+1. Build your app:
+
+```bash
+vite build
+```
+
+2. Once the build is complete, preview the built app:
+
+```bash
+vite preview
+```
+
+## What you have to do
+
+Each hosting provider has its own way of handling routing.  
+Since sendary generates static pages as `.html` files, some hosting services (especially those that don't support clean URLs) may not display pages correctly unless the proper routing configuration is set.
+
+Checking this in advance ensures your app will run smoothly after deployment.
+
+### Netlify
+
+Netlify supports clean URLs by default, so no additional configuration is required.
+
+### Vercel
+
+Modify `vercel.json`:
+
+```json
+{
+  "cleanUrls": true
+}
+```

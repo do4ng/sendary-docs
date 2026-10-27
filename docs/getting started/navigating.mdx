@@ -1,0 +1,133 @@
+Using the modules provided by **sendary**, users can experience smoother navigation between pages.
+
+Since sendary is a static site generator primarily designed for documentation, blogs, and landing pages, smooth page transitions are considered a top priority.
+During navigation, Sendary loads the matching page module and downloads the corresponding **static props** when they are not already cached.
+
+---
+
+## `<Link />`
+
+The `<Link />` component enables client-side navigation without triggering a full page reload.
+
+> When a `<Link />` is clicked, the target page module and its static props are loaded and cached.
+
+```tsx
+import { Link } from "sendary/components";
+
+export default function () {
+  return <Link href="/">Go to Home</Link>;
+}
+```
+
+<Box type="info">
+  External URLs are rendered as normal links and trigger a full-page navigation. Only
+  same-origin links use Sendary's client-side router.
+</Box>
+
+### Prefetch
+
+By default, the `<Link />` component pre-downloads the static data for the target page. This may lead to issues such as performance degradation and excessive network requests, so you can disable this prefetching if needed.
+
+```tsx
+export default function () {
+  return (
+    <Link href="/" prefetch={false}>
+      Prefetch: false
+    </Link>
+  );
+}
+```
+
+---
+
+## \$sendary-router
+
+`$sendary-router` is the core router of sendary, provided as a Vite virtual module.
+
+```ts
+import {
+  useLocation,
+  useParams,
+  useRouter,
+  router,
+  usePathname,
+  useSearchQuery,
+  useHash,
+  useURL,
+} from "$sendary-router";
+```
+
+During static rendering, Sendary provides an SSR implementation so these hooks can render
+consistently. Browser navigation operations run only in the browser.
+
+### `useLocation()` <Badge type="warning">React Only</Badge>
+
+Returns the current location.
+This hook can only be used inside React components.
+
+```ts
+const location = useLocation(); // href
+const pathname = usePathname(); // pathname
+const query = useSearchQuery(); // searchQuery
+const hash = useHash(); // hash
+const url = useURL(); // URL object
+```
+
+---
+
+### `useParams()` <Badge type="warning">React Only</Badge>
+
+Returns the parameters of a dynamic route.
+It is built on top of `useLocation()`.
+
+```ts
+const params = useParams();
+```
+
+This hook can also be used inside special files such as `_layout`.
+
+---
+
+### `useRouter()` <Badge type="warning">React Only</Badge>
+
+Provides router utilities for URL navigation.
+It is also based on `useLocation()`.
+
+```ts
+const { location, push, replace } = useRouter();
+```
+
+---
+
+### `router`
+
+A core router instance that manages page modules and static props.
+
+```ts
+await router.goto("/");
+// Loads and caches the page module and static props for the "/" page.
+```
+
+Unlike `useRouter`, calling `router.goto()` **does not change the URL or render** the
+page. It loads the page module and its static data, then caches both. When navigating
+programmatically without `<Link />`, combine it with `push` or `replace`:
+
+```tsx
+function NextPageButton({ href }: { href: string }) {
+  const { push } = useRouter();
+
+  return (
+    <button
+      onClick={async () => {
+        await router.goto(href); // load the page module and static props
+        push(href); // update the URL and render the page
+      }}
+    >
+      Next page
+    </button>
+  );
+}
+```
+
+`router.prefetch()` is the data-only version: it fetches static props without loading the
+page module. External URLs are not handled by the client router.

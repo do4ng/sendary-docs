@@ -1,0 +1,46 @@
+The `<Link />` component enables client-side navigation without triggering a full page reload.
+
+```tsx
+import { Link } from "sendary/components";
+
+export default function () {
+  return <Link href="/">Go to Home</Link>;
+}
+```
+
+<Box type="info">
+  External URLs are rendered as normal links and trigger a full-page navigation. Only
+  same-origin links use Sendary's client-side router.
+</Box>
+
+Client-side navigation requires Sendary's client runtime. During static rendering the URL hooks still work, but browser navigation APIs are only available in the browser.
+
+## Prefetch
+
+By default, the `<Link />` component pre-downloads the static data for the target page. This may lead to issues such as performance degradation and excessive network requests, so you can disable this prefetching if needed.
+
+```tsx
+export default function () {
+  return (
+    <Link href="/" prefetch={false}>
+      This page will be loaded when Link clicked
+    </Link>
+  );
+}
+```
+
+Use `preload` to add a preload hint for the target page's static data during SSR:
+
+```tsx
+<Link href="/post/1" preload>
+  Post 1
+</Link>
+```
+
+## When you click
+
+1. Click the `<Link />`.
+2. If the link only changes the hash, let the browser handle it.
+3. Run `props.onClick`; calling `preventDefault()` stops navigation.
+4. For an external URL, perform a normal full-page navigation.
+5. Otherwise, load the page module and static data, then push the new URL.

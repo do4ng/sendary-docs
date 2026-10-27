@@ -1,0 +1,14 @@
+The `<Image />` component renders a standard `<img>` element with the props you pass.
+
+```tsx
+import { Image } from "sendary/components";
+
+export default function () {
+  return <Image src="/emoji.png" alt="Emoji"></Image>;
+}
+```
+
+<Box type="info">
+  Automatic image preloading is not enabled in the current implementation. To prioritize
+  a hero or above-the-fold image, add a preload link through `<Head />`.
+</Box>{" "}
