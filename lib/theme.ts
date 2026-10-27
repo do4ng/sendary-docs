@@ -18,6 +18,7 @@ export function applyTheme(theme: Theme): void {
   if (typeof document === "undefined") return;
 
   document.documentElement.setAttribute("class", theme);
+  document.documentElement.style = `color-scheme: ${theme === "dark" ? "dark" : "light"};`;
 }
 
 export function saveTheme(theme: Theme): void {
