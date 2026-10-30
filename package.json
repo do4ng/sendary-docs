@@ -22,7 +22,7 @@
     "remark-gfm": "^4.0.0",
     "remixicon": "^4.0.0",
     "sass": "^1.90.0",
-    "sendary": "^1.0.0",
+    "sendary": "../nudo/packages/sendary",
     "shiki": "^1.2.2",
     "unified": "^11.0.4",
     "unist-util-visit": "2"

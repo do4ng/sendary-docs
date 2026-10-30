@@ -2959,10 +2959,8 @@ semver@^6.3.1:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-sendary@^1.0.0:
+sendary@../nudo/packages/sendary:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/sendary/-/sendary-1.0.0.tgz#bac1f5681d2f5c6603d3b53b427f1df80528af08"
-  integrity sha512-XWurf8MC3jIJmzYPMzCkDjiqHi/1e+O+w9g8HHvMUVpe3jv+A0/SuyQzRF2e17Zm6dnqYCvXVU+8kmq/EGD3JQ==
   dependencies:
     colors "^1.4.0"
     esbuild "^0.25.8"

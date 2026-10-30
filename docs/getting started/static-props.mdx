@@ -20,7 +20,7 @@ export function getStaticProps() {}
 In a dynamic route page, `getStaticParams` provides the possible parameter values to generate static routes.
 Only the paths returned by this function will be generated at build time.
 
-```ts
+```ts [title="/pages/[slug].tsx"]
 // pages/[slug].tsx
 export function getStaticParams() {
   return [{ slug: "hello" }];
@@ -40,7 +40,7 @@ Sendary writes a route containing the literal `[param]` placeholder instead.
 This function is used to generate static data on the server.
 It runs once for each generated route during the build and passes the returned props to the page.
 
-```tsx
+```tsx [title="/pages/hello/[name].tsx"]
 // pages/hello/[name].tsx
 import type { PageProps } from "sendary";
 

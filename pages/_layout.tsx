@@ -16,6 +16,7 @@ import { findSectionByPath } from "@/lib/docs";
 import { applyTheme, readStoredTheme } from "@/lib/theme";
 import { capitalizeFirstLetter } from "@/lib/up";
 import { useBodyScrollLock } from "@/lib/use-body-scroll-lock";
+import { TopProgressBar } from "@/components/progress";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const fullPathname = usePathname();
@@ -53,6 +54,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Header />
       <DocsSearch />
+      <TopProgressBar />
 
       {isDocs ? (
         <>
