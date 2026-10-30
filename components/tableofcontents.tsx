@@ -10,6 +10,7 @@ import {
 } from "react";
 import { usePathname } from "$sendary-router";
 
+import site from "@/site.config";
 import { SENDARY_EVENTS } from "@/lib/events";
 
 interface HeadingItem {
@@ -266,22 +267,24 @@ export function TableOfContents() {
         ) : (
           <div className="toc-empty">No headings</div>
         )}
-        <div className="table-actions">
-          <div>
-            <span>
-              <i className="ri-github-fill"></i>
-            </span>
-            <a
-              className="no-a"
-              href="https://github.com/zely-js/sendary"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-            >
-              Feedback on GitHub
-            </a>
+        {site.github && (
+          <div className="table-actions">
+            <div>
+              <span>
+                <i className="ri-github-fill"></i>
+              </span>
+              <a
+                className="no-a"
+                href={site.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                Feedback on GitHub
+              </a>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
 
       {/* Mobile TOC Drawer */}

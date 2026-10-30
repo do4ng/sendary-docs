@@ -4,14 +4,12 @@ import { useMemo, useState } from "react";
 import { Link } from "sendary/components";
 
 import type { BlogAuthor, BlogPost } from "@/blog.config";
+import site from "@/site.config";
+import { getBlogSlug } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 
-function getPostSlug(post: BlogPost): string {
-  return post.slug ?? post.date;
-}
-
 function getAuthor(post: BlogPost): BlogAuthor {
-  return post.author ?? { name: "do4ng", role: "Maintainer" };
+  return post.author ?? site.blog.defaultAuthor ?? { name: "" };
 }
 
 export function BlogList({ posts }: { posts: BlogPost[] }) {
@@ -33,7 +31,7 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
     // 1. Strict deduplication of input posts by slug / date
     const uniquePostsMap = new Map<string, BlogPost>();
     for (const post of posts) {
-      const slug = getPostSlug(post);
+      const slug = getBlogSlug(post);
       if (!uniquePostsMap.has(slug)) {
         uniquePostsMap.set(slug, post);
       }
@@ -92,12 +90,10 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
       <div className="blog-hero">
         <div className="blog-badge">
           <i className="ri-article-line" aria-hidden="true"></i>
-          <span>Developer Blog</span>
+          <span>{site.blog.badge}</span>
         </div>
-        <h1>Blog</h1>
-        <p>
-          Updates, engineering insights, and release announcements.
-        </p>
+        <h1>{site.blog.title}</h1>
+        <p>{site.blog.description}</p>
       </div>
 
       {/* Categories & Search Controls */}
@@ -122,7 +118,7 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
           <i className="ri-search-line" aria-hidden="true"></i>
           <input
             type="text"
-            placeholder="Search articles..."
+            placeholder={site.blog.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             autoComplete="off"
@@ -159,7 +155,7 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
           {filteredPosts.map((post) => {
             const author = getAuthor(post);
             const isPinned = Boolean(post.pinned);
-            const slug = getPostSlug(post);
+            const slug = getBlogSlug(post);
 
             return (
               <Link

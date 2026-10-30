@@ -1,12 +1,16 @@
 import blogPosts, { type BlogPost } from "@/blog.config";
 
+export function getBlogSlug(post: BlogPost): string {
+  return post.slug ?? post.date;
+}
+
 export function findBlogPost(slug: string): {
   post: BlogPost | null;
   previousPost: BlogPost | null;
   nextPost: BlogPost | null;
   index: number;
 } {
-  const index = blogPosts.findIndex((post) => post.date === slug);
+  const index = blogPosts.findIndex((post) => getBlogSlug(post) === slug);
 
   return {
     post: index === -1 ? null : blogPosts[index],

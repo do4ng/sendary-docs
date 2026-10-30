@@ -1,18 +1,30 @@
 import { Link } from "sendary/components";
 
-import docs from "@/docs";
+import site from "@/site.config";
+import { getPageTitle } from "@/lib/site";
 import { compileMdx } from "@/mdx/compile";
 import { Content } from "@/mdx/content";
 
-const README_URL =
-  "https://raw.githubusercontent.com/zely-js/sendary/refs/heads/main/README.md";
-
 export async function getStaticProps() {
-  const response = await fetch(README_URL);
-  const raw = await response.text();
-  const compiled = await compileMdx(raw);
+  if (!site.home.readmeUrl) {
+    return { compiled: "" };
+  }
 
-  return { compiled };
+  try {
+    const response = await fetch(site.home.readmeUrl);
+
+    if (!response.ok) {
+      throw new Error(`Failed to load README: ${response.status}`);
+    }
+
+    const raw = await response.text();
+    const compiled = await compileMdx(raw);
+
+    return { compiled };
+  } catch (error) {
+    console.warn(`[site] ${(error as Error).message}`);
+    return { compiled: "" };
+  }
 }
 
 export default function HomePage({
@@ -24,38 +36,42 @@ export default function HomePage({
 }) {
   return (
     <>
+      <title>{getPageTitle()}</title>
+
       <div className="product-container">
         <div className="title">
-          <div className="hero-badge">
-            <span className="hero-badge-dot"></span>
-            <span>Next-Gen React SSG</span>
-          </div>
+          {site.home.badge && (
+            <div className="hero-badge">
+              <span className="hero-badge-dot"></span>
+              <span>{site.home.badge}</span>
+            </div>
+          )}
 
-          <h1 dangerouslySetInnerHTML={{ __html: docs.description }}></h1>
+          <h1 dangerouslySetInnerHTML={{ __html: site.home.heading }}></h1>
 
-          <p className="hero-subtext">
-            Build blazingly fast, modern documentation and content sites with
-            React, Vite, and Island Architecture.
-          </p>
+          <p className="hero-subtext">{site.home.description}</p>
 
-          <div className="actions">
-            <Link href="/docs/installation">
-              <button className="btn text">Getting Started</button>
-            </Link>
-            <Link href="/docs/why-sendary">
-              <button className="btn text">Why Sendary</button>
-            </Link>
-          </div>
+          {site.home.actions.length > 0 && (
+            <div className="actions">
+              {site.home.actions.map((action) => (
+                <Link href={action.href} key={action.href}>
+                  <button className="btn text">{action.label}</button>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="info-v3">
-        <div className="info-v3-content">
-          <div className="content-container post">
-            <Content content={compiled}></Content>
+      {compiled && (
+        <div className="info-v3">
+          <div className="info-v3-content">
+            <div className="content-container post">
+              <Content content={compiled}></Content>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

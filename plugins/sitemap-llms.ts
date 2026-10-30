@@ -4,14 +4,9 @@ import type { Plugin } from "vite";
 
 import blogPosts from "../blog.config";
 import config from "../config";
+import site from "../site.config";
 
-const BASE_URL = "https://sendary.vercel.app";
-
-const EXAMPLE_ENTRIES = [
-  "- [basic template example](https://github.com/zely-js/sendary/tree/main/packages/create-sendary/template): A Sendary template demonstrating the most basic routing setup. \n",
-  "- [dev docs example](https://github.com/do4ng/website): A developer documentation example built with Sendary. \n",
-  "- [blog example](https://github.com/do4ng/do4ng.github.io): A blog example built with Sendary. \n",
-];
+const BASE_URL = site.url.replace(/\/$/, "");
 
 function addUrl(lines: string[], url: string): void {
   lines.push("  <url>");
@@ -26,16 +21,17 @@ function buildSitemapAndLlms(): { sitemap: string; llms: string } {
   ];
 
   const llms: string[] = [
-    "# Sendary",
+    `# ${site.name}`,
     "",
-    "> Sendary is a React-based framework for building modern web applications with Vite, supporting features such as file-based routing, SSG, and static generation.",
+    `> ${site.description}`,
     "",
-    "The following documents provide detailed information about Sendary and its APIs.",
+    `The following documents provide detailed information about ${site.name} and its APIs.`,
     "",
   ];
 
   for (const section of config) {
     const { title, category } = section;
+    const directory = section.directory || title.toLowerCase();
 
     llms.push(`## ${title}`);
     llms.push("");
@@ -43,7 +39,7 @@ function buildSitemapAndLlms(): { sitemap: string; llms: string } {
     for (const cat of category) {
       for (const post of cat.posts) {
         const [slug] = Object.keys(post);
-        const url = `${BASE_URL}/${title}/${slug}`;
+        const url = `${BASE_URL}/${directory}/${slug}`;
 
         addUrl(sitemap, url);
 
@@ -64,19 +60,21 @@ function buildSitemapAndLlms(): { sitemap: string; llms: string } {
 
   addUrl(sitemap, `${BASE_URL}/blog`);
   llms.push(
-    `- [Developer Blog](${BASE_URL}/blog): Sendary developer and engineering blog articles.`,
+    `- [${site.blog.title}](${BASE_URL}/blog): ${site.blog.description}`,
   );
 
   for (const post of blogPosts) {
-    const blogUrl = `${BASE_URL}/blog/${post.slug}`;
+    const blogUrl = `${BASE_URL}/blog/${post.slug ?? post.date}`;
 
     addUrl(sitemap, blogUrl);
     llms.push(`- [${post.title}](${blogUrl}): ${post.description}`);
   }
 
-  llms.push("");
-  llms.push("## examples\n");
-  llms.push(...EXAMPLE_ENTRIES);
+  if (site.examples && site.examples.length > 0) {
+    llms.push("");
+    llms.push("## examples\n");
+    llms.push(...site.examples);
+  }
 
   sitemap.push("</urlset>");
 

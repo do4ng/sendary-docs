@@ -6,6 +6,7 @@ import { Link } from "sendary/components";
 
 import parents from "@/config";
 import type { Post } from "@/config";
+import { getPageTitle } from "@/lib/site";
 import { capitalizeFirstLetter } from "@/lib/up";
 import {
   findPostInSection,
@@ -217,7 +218,7 @@ export default function DocPage({
   return (
     <>
       <ScrollTop />
-      <title>{`${postName} - sendary`}</title>
+      <title>{getPageTitle(postName)}</title>
       <div className="content-flex">
         <div className="post">
           <DocBreadcrumbs path={breadcrumbPath} />

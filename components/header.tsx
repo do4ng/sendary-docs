@@ -10,11 +10,10 @@ import { Popover } from "@/components/popper";
 import { TextLabel } from "@/components/label";
 import { ThemeSelector } from "@/components/theme-selector";
 import docs from "@/docs";
+import site from "@/site.config";
 import { dispatchSendaryEvent, SENDARY_EVENTS } from "@/lib/events";
 import { useBodyScrollLock } from "@/lib/use-body-scroll-lock";
 import { useTheme } from "@/lib/use-theme";
-
-const GITHUB_URL = "https://github.com/zely-js/sendary";
 
 function isActiveHref(href: string, path: string): boolean {
   return href.split("/")[1]?.toLowerCase() === path.toLowerCase();
@@ -93,7 +92,8 @@ export function Header() {
       <div className="header">
         <div className="header-left">
           <Link className="item-1 logo" href="/">
-            {docs.name} <span className="docs-icon">docs</span>
+            {site.name}
+            {site.badge && <span className="docs-icon">{site.badge}</span>}
           </Link>
 
           <nav className="item-2 desktop-nav" aria-label="Main navigation">
@@ -145,27 +145,31 @@ export function Header() {
             <kbd>Ctrl K</kbd>
           </button>
           <div className="desktop-actions">
-            <TextLabel text="What's new?">
-              <Link href="/changelog/changelog" aria-label="Changelog">
-                <p className="news-bell">
-                  <i className="ri-receipt-line"></i>
-                </p>
-              </Link>
-            </TextLabel>
+            {site.changelog && (
+              <TextLabel text={site.changelog.label}>
+                <Link href={site.changelog.href} aria-label={site.changelog.label}>
+                  <p className="news-bell">
+                    <i className="ri-receipt-line"></i>
+                  </p>
+                </Link>
+              </TextLabel>
+            )}
 
             <ThemeSelector theme={theme} onToggle={toggle} />
 
-            <TextLabel text="GitHub">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={GITHUB_URL}
-                className="big-icon"
-                aria-label="GitHub repository"
-              >
-                <i className="ri-github-fill"></i>
-              </a>
-            </TextLabel>
+            {site.github && (
+              <TextLabel text="GitHub">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={site.github}
+                  className="big-icon"
+                  aria-label="GitHub repository"
+                >
+                  <i className="ri-github-fill"></i>
+                </a>
+              </TextLabel>
+            )}
           </div>
 
           <div className="mobile-actions">
@@ -237,25 +241,29 @@ export function Header() {
                 );
               })}
 
-              <Link
-                href="/changelog/changelog"
-                className="mobile-menu-item"
-                onClick={closeMobileMenu}
-              >
-                <i className="ri-receipt-line"></i>
-                <span>What's new?</span>
-              </Link>
+              {site.changelog && (
+                <Link
+                  href={site.changelog.href}
+                  className="mobile-menu-item"
+                  onClick={closeMobileMenu}
+                >
+                  <i className="ri-receipt-line"></i>
+                  <span>{site.changelog.label}</span>
+                </Link>
+              )}
 
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mobile-menu-item"
-                onClick={closeMobileMenu}
-              >
-                <i className="ri-github-fill"></i>
-                <span>GitHub Repository</span>
-              </a>
+              {site.github && (
+                <a
+                  href={site.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mobile-menu-item"
+                  onClick={closeMobileMenu}
+                >
+                  <i className="ri-github-fill"></i>
+                  <span>GitHub Repository</span>
+                </a>
+              )}
             </div>
 
             <div className="mobile-menu-footer">

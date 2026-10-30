@@ -20,11 +20,6 @@ export interface DocsLink {
 export type DocsHeaderItem = DocsPopover | DocsLink;
 
 export interface Docs {
-  name: string;
-  description: string;
-
-  github?: string;
-
   index: {
     content: string;
     href: string;
@@ -34,8 +29,6 @@ export interface Docs {
 }
 
 const docs: Docs = {
-  name: "Sendary",
-  description: 'The React <br/><span class="gra ">SSG Framework</span> <br/>',
   index: [
     {
       content: "Getting Started",

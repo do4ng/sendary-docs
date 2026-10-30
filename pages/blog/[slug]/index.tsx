@@ -4,14 +4,16 @@ import { join } from "path";
 import { Link } from "sendary/components";
 
 import blogPosts, { type BlogPost } from "@/blog.config";
-import { findBlogPost } from "@/lib/blog";
+import site from "@/site.config";
+import { findBlogPost, getBlogSlug } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
+import { getPageTitle } from "@/lib/site";
 import ScrollTop from "@/lib/scrolltotop";
 import { compileMdx } from "@/mdx/compile";
 import { Content } from "@/mdx/content";
 
 export async function getStaticParams() {
-  return blogPosts.map(({ date }) => ({ slug: date }));
+  return blogPosts.map((post) => ({ slug: getBlogSlug(post) }));
 }
 
 function readPostSource(slug: string, title: string): string {
@@ -48,10 +50,12 @@ export default function BlogPostPage({
 }: BlogPostPageProps) {
   if (!target) return <></>;
 
+  const author = target.author ?? site.blog.defaultAuthor;
+
   return (
     <>
       <ScrollTop />
-      <title>{`${target.title} - sendary`}</title>
+      <title>{getPageTitle(target.title)}</title>
 
       <div className="blog-article-container">
         <Link href="/blog" className="article-back-link">
@@ -60,17 +64,19 @@ export default function BlogPostPage({
 
         <header className="article-header">
           <div className="article-meta-row">
-            <span className="article-category">Development</span>
+            <span className="article-category">{target.category}</span>
             <span className="article-date">{formatDate(target.date)}</span>
           </div>
 
           <h1>{target.title}</h1>
-          <div className="article-author-row">
-            <div className="article-author-info">
-              <span className="name">do4ng</span>
-              <span className="role">Maintainer</span>
+          {author?.name && (
+            <div className="article-author-row">
+              <div className="article-author-info">
+                <span className="name">{author.name}</span>
+                {author.role && <span className="role">{author.role}</span>}
+              </div>
             </div>
-          </div>
+          )}
         </header>
 
         <main className="content-container post">
@@ -79,7 +85,10 @@ export default function BlogPostPage({
 
         <div className="article-footer-nav">
           {previousPost ? (
-            <Link href={`/blog/${previousPost.date}`} className="nav-card prev">
+            <Link
+              href={`/blog/${getBlogSlug(previousPost)}`}
+              className="nav-card prev"
+            >
               <span className="nav-label">
                 <i className="ri-arrow-left-line"></i> Previous Article
               </span>
@@ -90,7 +99,10 @@ export default function BlogPostPage({
           )}
 
           {nextPost ? (
-            <Link href={`/blog/${nextPost.date}`} className="nav-card next">
+            <Link
+              href={`/blog/${getBlogSlug(nextPost)}`}
+              className="nav-card next"
+            >
               <span className="nav-label">
                 Next Article <i className="ri-arrow-right-line"></i>
               </span>
