@@ -162,6 +162,7 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
                 key={`blog-post-${slug}`}
                 href={`/blog/${slug}`}
                 className={`blog-item ${isPinned ? "is-pinned" : ""}`}
+                preload={false}
               >
                 <div className="blog-item-meta">
                   {isPinned && (
@@ -171,7 +172,9 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
                     </span>
                   )}
                   <span className="blog-item-category">{post.category}</span>
-                  <span className="blog-item-date">{formatDate(post.date)}</span>
+                  <span className="blog-item-date">
+                    {formatDate(post.date)}
+                  </span>
                   {post.readTime && (
                     <span className="blog-item-readtime">
                       <i className="ri-time-line" aria-hidden="true"></i>
@@ -199,7 +202,9 @@ export function BlogList({ posts }: { posts: BlogPost[] }) {
                             loading="lazy"
                           />
                         )}
-                        <span className="blog-item-author-name">{author.name}</span>
+                        <span className="blog-item-author-name">
+                          {author.name}
+                        </span>
                       </div>
                     )}
                     {post.tags && post.tags.length > 0 && (

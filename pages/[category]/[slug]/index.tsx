@@ -53,11 +53,7 @@ export async function getStaticParams() {
   );
 }
 
-export async function getStaticProps({
-  params,
-}: {
-  params: DocPageParams;
-}) {
+export async function getStaticProps({ params }: { params: DocPageParams }) {
   const section = findSectionByTitle(params.category);
 
   if (!section) {
@@ -113,9 +109,7 @@ function DocBreadcrumbs({ path }: { path: string[] }) {
       {path.map((segment, index) => (
         <Fragment key={`${segment}-${index}`}>
           {index > 0 && <i className="ri-arrow-right-s-line"></i>}
-          <div className="directory-path">
-            {capitalizeFirstLetter(segment)}
-          </div>
+          <div className="directory-path">{capitalizeFirstLetter(segment)}</div>
         </Fragment>
       ))}
     </div>
@@ -209,7 +203,10 @@ export default function DocPage({
   };
 
   const postName = getPostTitle(target);
-  const breadcrumbPath = [params.category, (targetcategory || "").toLowerCase()];
+  const breadcrumbPath = [
+    params.category,
+    (targetcategory || "").toLowerCase(),
+  ];
 
   if (breadcrumbPath[1] !== postName.toLowerCase()) {
     breadcrumbPath.push(postName);

@@ -91,9 +91,8 @@ export function CategoryMenu({ category, hidden }: CategoryMenuProps) {
                 <Link
                   href={`/${params.category}/${slug}`}
                   onClick={closeSidebar}
-                  className={`btn ${
-                    params?.slug === slug ? "active" : ""
-                  }`}
+                  className={`btn ${params?.slug === slug ? "active" : ""}`}
+                  prefetch={false}
                 >
                   {getPostTitle(post)}
                 </Link>
